@@ -6,6 +6,9 @@ import torch
 NUM_FINE_LABELS = 14
 
 def get_class_weights(root_dir):
+    return torch.rand(14)
+
+def get_class_weights_orig(root_dir):
     df_init = pd.read_csv(root_dir + 'train.csv')
     df = df_init.iloc[:,5:].copy()
     df = df.replace(-1,0)

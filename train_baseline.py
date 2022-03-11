@@ -6,9 +6,10 @@ import numpy as np
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader, Subset
+from torchvision import transforms
 
 import dataset
-import transforms
+import transforms as custom_transforms
 import trainer
 import models
 import utils
@@ -21,6 +22,7 @@ def main(args):
 
     # Read config:
     path_root_to_data = pathlib.Path(config['path_to_data'])
+    path_to_save_dir = pathlib.Path(config['path_to_save_dir'])
 
     train_batch_size = int(config['train_batch_size'])
     val_batch_size = int(config['val_batch_size'])
@@ -28,24 +30,28 @@ def main(args):
     lr = float(config['lr'])
     n_epochs = int(config['n_epochs'])
     small_eval_size = int(config['small_eval_size'])
+    eval_freq = int(config['eval_freq'])
 
     # Train and val data transforms:
     train_transforms = transforms.Compose([
-        transforms.XRayCenterCrop(),
-        transforms.NormalizeIntensity(),
+        custom_transforms.XRayCenterCrop(),
+        custom_transforms.NormalizeIntensity(),
         transforms.ToTensor(),
     ])
 
     val_transforms = transforms.Compose([
-        transforms.XRayCenterCrop(),
-        transforms.NormalizeIntensity(),
+        custom_transforms.XRayCenterCrop(),
+        custom_transforms.NormalizeIntensity(),
         transforms.ToTensor(),
     ])
 
     # Datasets:
-    train_dataset = dataset.ChexpertDataset(path_root_to_data, mode='train', transforms=train_transforms)
-    val_dataset = dataset.ChexpertDataset(path_root_to_data, mode='valid', transforms=val_transforms)
-    small_val_dataset = Subset(val_dataset, np.arange(0, small_eval_size))
+    #train_dataset = dataset.ChexpertDataset(path_root_to_data, mode='train', transforms=train_transforms)
+    #val_dataset = dataset.ChexpertDataset(path_root_to_data, mode='valid', transforms=val_transforms)
+    #small_val_dataset = Subset(val_dataset, np.arange(0, small_eval_size))
+    train_dataset = dataset.DummyDataset()
+    val_dataset = dataset.DummyDataset()
+    small_val_dataset = dataset.DummyDataset()
 
     # Dataloaders:
     train_loader = DataLoader(train_dataset, batch_size=train_batch_size, shuffle=True, num_workers=num_workers)
@@ -73,12 +79,12 @@ def main(args):
         optimizer=optimizer,
         num_epochs=n_epochs,
         config_dict=config,
-        parallel=True
+        eval_freq=eval_freq,
     )
 
     model_trainer.train_model()
     model_trainer.eval_model()
-
+    model_trainer.save_results(path_to_save_dir)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Model training script')

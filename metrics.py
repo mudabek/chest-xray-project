@@ -4,10 +4,10 @@ from sklearn.metrics import f1_score, roc_auc_score
 
 
 # Get the label names from the dataframe
-root_dir = '/home/otabek.nazarov/Downloads/research/chexpert/CheXpert-v1.0-small'
-df_valid = pd.read_csv(root_dir + 'valid.csv')
-LABEL_NAMES = df_valid.colums[5:]
-
+#root_dir = '/home/otabek.nazarov/Downloads/research/chexpert/CheXpert-v1.0-small'
+#df_valid = pd.read_csv(root_dir + 'valid.csv')
+#LABEL_NAMES = df_valid.colums[5:]
+LABEL_NAMES = ['a', 'b']
 
 def f1_as_dict(gt, pred):
     """ Returns F1 scores of all labels as dict for wandb """

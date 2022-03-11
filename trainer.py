@@ -48,6 +48,7 @@ class ModelTrainer:
 
     def train_model(self):
         self.model.train()
+        step = 0
         for epoch in range(self.num_epochs):
             print(f"[Epoch {epoch} / {self.num_epochs}]")
 
@@ -81,8 +82,9 @@ class ModelTrainer:
                         out_pred = torch.cat((out_pred, probabs), 0)
 
                     roc_auc_dict = auc_roc_as_dict(out_gt, out_pred)
-
+                    
                     if roc_auc_dict['auc_average'] < self.best_val_metric:
+                        print('Updating best result')
                         self.best_step = step
                         self.best_val_metric = roc_auc_dict['auc_average']
                         self.best_model_weights = copy.deepcopy(self.model.state_dict())
@@ -96,6 +98,7 @@ class ModelTrainer:
 
 
     def eval_model(self):
+        print('===> Evaluating')
         self.model.eval()       
         out_pred = torch.FloatTensor().to('cpu')
         out_gt = torch.FloatTensor().to('cpu')
@@ -115,10 +118,11 @@ class ModelTrainer:
         wandb.log(roc_auc_dict)
 
         # NEED TO SAVE IT IF NEEDED
-        class_thresholds = get_classification_thresholds(out_gt, out_pred)
+        #class_thresholds = get_classification_thresholds(out_gt, out_pred)
 
 
     def save_results(self, path_to_dir):
+        print('===> Saving')
         path_to_dir = pathlib.Path(path_to_dir)
 
         # Check if the directory exists:

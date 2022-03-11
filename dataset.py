@@ -45,6 +45,22 @@ class ChexpertDataset(Dataset):
         return image_data, torch.FloatTensor(self.image_labels[index])
 
 
+class DummyDataset():
+    def __init__(self):
+        pass
+
+
+    def __len__(self):
+        return 20
+    
+
+    def __getitem__(self, index):
+        dummy_image_data = torch.rand(1, 224, 224)
+        dummy_labels = torch.rand(14)
+
+        return dummy_image_data, dummy_labels
+
+
 if __name__ == "__main__":
     root_dir = '/home/otabek.nazarov/Downloads/research/chexpert/CheXpert-v1.0-small/'
     test_dataset = ChexpertDataset(root_dir=root_dir, mode='train')
