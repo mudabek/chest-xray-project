@@ -1,17 +1,16 @@
-# Paths:
-#path_to_data: '/home/otabek.nazarov/Downloads/research/chexpert/CheXpert-v1.0-small'
-#path_to_save_dir: '/home/otabek.nazarov/Downloads/research/chexpert/ml702_project/save_dir'  
-path_to_data: 'l/users/otabek.nazarov/chexpert/'
-path_to_save_dir: ''
+# Paths:  
+path_to_data: '/l/users/otabek.nazarov/chexpert/CheXpert-v1.0-small/'
+path_to_save_dir: '/l/users/otabek.nazarov/chexpert/saved/'
 
 # Train settings:
-train_batch_size: 16
-val_batch_size: 1
+image_size: 224
+train_batch_size: 32
+val_batch_size: 32
 num_workers: 16 
 lr: 1e-3 
-n_epochs: 2
-small_eval_size: 5
-eval_freq: 2
+n_epochs: 10
+small_eval_size: 1000
+eval_freq: 800
 
 # Other configs
 send_to_wandb: False

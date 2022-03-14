@@ -47,6 +47,7 @@ class ModelTrainer:
 
 
     def train_model(self):
+        print('===> Training')
         self.model.train()
         step = 0
         for epoch in range(self.num_epochs):
@@ -117,17 +118,13 @@ class ModelTrainer:
         roc_auc_dict = {f'{k}@validation': v for k, v in roc_auc_dict.items()}
         wandb.log(roc_auc_dict)
 
-        # NEED TO SAVE IT IF NEEDED
+        # NEED TO SAVE IT IF NEED TO USE MODEL LATER FOR ACTUAL CLASSIFICATION
         #class_thresholds = get_classification_thresholds(out_gt, out_pred)
 
 
     def save_results(self, path_to_dir):
         print('===> Saving')
         path_to_dir = pathlib.Path(path_to_dir)
-
-        # Check if the directory exists:
-        if not os.path.exists(path_to_dir):
-            os.makedirs(path_to_dir)
 
         # Save best model weights:
         torch.save(self.best_model_weights, path_to_dir / 'best_model_weights.pt')
