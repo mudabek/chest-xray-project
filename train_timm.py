@@ -30,6 +30,7 @@ def main(args):
     n_epochs = int(config['n_epochs'])
     small_eval_size = int(config['small_eval_size'])
     eval_freq = int(config['eval_freq'])
+    device = torch.device('cuda:0' if torch.cuda.is_available() else "cpu")
 
     # Train and val data transforms:
     train_transforms = transforms.Compose([
@@ -65,6 +66,7 @@ def main(args):
     # Model
     model_name = config['model_name']
     model = models.TimmModels(model_name, pretrained=True)
+    model.to(device)
 
     # Training things
     pos_weights = utils.get_class_weights(path_root_to_data)
@@ -84,7 +86,7 @@ def main(args):
     model_trainer.train_model()
     model_trainer.eval_model()
     model_trainer.save_results()
-    
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Model training script')

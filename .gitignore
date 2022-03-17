@@ -7,6 +7,8 @@ run.batch
 
 # C extensions
 *.so
+*.err
+*.out
 
 # Distribution / packaging
 .Python
