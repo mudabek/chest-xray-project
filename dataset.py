@@ -1,5 +1,6 @@
 import os
 import pandas as pd
+import numpy as np
 from PIL import Image
 import torch
 from torch.utils.data import Dataset
@@ -20,7 +21,7 @@ class ChexpertDataset(Dataset):
         
         # Get all image paths and image labels from dataframe
         for index, row in main_df.iterrows():
-            image_path = os.path.join(root_dir[:-20], row.Path) # 20 to remove ChexPert index
+            image_path = os.path.join(str(root_dir)[:-20], row.Path) # 20 to remove ChexPert index
             self.image_paths.append(image_path)
             labels = []
             for col in row[5:]:
@@ -37,7 +38,7 @@ class ChexpertDataset(Dataset):
 
     def __getitem__(self, index):
         image_path = self.image_paths[index]
-        image_data = Image.open(image_path).convert("RGB") # Convert image to RGB channels
+        image_data = np.array(Image.open(image_path).convert("RGB"), dtype="float32") # Convert image to RGB channels
         
         if self.transforms:
             image_data = self.transforms(image_data)
