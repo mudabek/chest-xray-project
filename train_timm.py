@@ -22,7 +22,6 @@ def main(args):
 
     # Read config:
     path_root_to_data = pathlib.Path(config['path_to_data'])
-    path_to_save_dir = pathlib.Path(config['path_to_save_dir'])
 
     train_batch_size = int(config['train_batch_size'])
     val_batch_size = int(config['val_batch_size'])
@@ -84,7 +83,7 @@ def main(args):
 
     model_trainer.train_model()
     model_trainer.eval_model()
-    model_trainer.save_results(path_to_save_dir)
+    model_trainer.save_results()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Model training script')

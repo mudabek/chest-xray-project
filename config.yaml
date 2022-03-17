@@ -1,16 +1,17 @@
 # Paths:
 path_to_data: '/l/users/otabek.nazarov/chexpert/CheXpert-v1.0-small/'
-path_to_save_dir: ''
+path_to_save_dir: '/l/users/otabek.nazarov/chexpert/CheXpert-v1.0-small/weights/'
+runs_title: 'densenet121_pretrained'
 
 # Train settings:
 model_name: 'densenet121'
 train_batch_size: 32
 val_batch_size: 32
-num_workers: 0
+num_workers: 16
 lr: 1e-3 
-n_epochs: 10
-small_eval_size: 1000
-eval_freq: 800
+n_epochs: 2
+small_eval_size: 2
+eval_freq: 2
 
 # Other configs
 send_to_wandb: False

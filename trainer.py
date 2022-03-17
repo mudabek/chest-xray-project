@@ -32,6 +32,8 @@ class ModelTrainer:
         self.save_last_model = save_last_model
         self.scheduler_step_per_epoch = scheduler_step_per_epoch
         self.eval_freq = eval_freq
+        self.path_to_save_dir = pathlib.Path(config_dict['path_to_save_dir'])
+        self.runs_title = config_dict['runs_title']
 
         # Summary: Best epoch, loss, metric and best model weights
         self.best_val_step = 0
@@ -92,6 +94,7 @@ class ModelTrainer:
                     
                     wandb.log(roc_auc_dict)
                     self.model.train()
+                break
         
         if self.save_last_model:
             self.checkpoint = {'model_state_dict': copy.deepcopy(self.model.state_dict()),
@@ -122,16 +125,16 @@ class ModelTrainer:
         #class_thresholds = get_classification_thresholds(out_gt, out_pred)
 
 
-    def save_results(self, path_to_dir):
+    def save_results(self):
         print('===> Saving')
-        path_to_dir = pathlib.Path(path_to_dir)
+        path_to_dir = pathlib.Path(self.path_to_save_dir )
 
         # Save best model weights:
-        torch.save(self.best_model_weights, path_to_dir / 'best_model_weights.pt')
+        torch.save(self.best_model_weights, path_to_dir / f'{self.runs_title}_best_model_weights.pt')
 
         # Save last model weights (checkpoint):
         if self.save_last_model:
-            torch.save(self.checkpoint, path_to_dir / 'last_model_checkpoint.tar')
+            torch.save(self.checkpoint, path_to_dir / f'{self.runs_title}_last_model_checkpoint.tar')
 
 
     def load_model_weights(self, path_to_checkpoint):
