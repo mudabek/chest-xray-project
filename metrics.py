@@ -35,7 +35,7 @@ def auc_roc_as_dict(y_gt, y_pred):
             cur_roc_auc = roc_auc_score(gt_np[:, i], pred_np[:, i])
             auroc[f'auc_{LABEL_NAMES[i]}'] = cur_roc_auc
             average_auroc =+ cur_roc_auc
-
-    auroc['auc_average'] = average_auroc / gt_np.shape[1]   
+    
+    auroc['auc_average'] = average_auroc / gt_np.shape[0]   
 
     return auroc

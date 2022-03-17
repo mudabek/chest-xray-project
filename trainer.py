@@ -14,7 +14,6 @@ from utils import get_classification_thresholds
 os.environ['WANDB_MODE'] = 'offline'
 
 
-
 class ModelTrainer:
 
     def __init__(self, model, dataloaders, criterion, optimizer, config_dict, scheduler=None, cuda_device="cuda:0",  

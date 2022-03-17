@@ -16,7 +16,7 @@ import utils
 
 # In case of issues with cluster training
 import os
-os.environ["CUDA_VISIBLE_DEVICES"] = "2"
+# os.environ["CUDA_VISIBLE_DEVICES"] = "2"
 
 
 def main(args):
@@ -40,14 +40,12 @@ def main(args):
     train_transforms = transforms.Compose([
         custom_transforms.XRayCenterCrop(),
         custom_transforms.NormalizeIntensity(),
-        # custom_transforms.ToRGB(),
         transforms.ToTensor(),
     ])
 
     val_transforms = transforms.Compose([
         custom_transforms.XRayCenterCrop(),
         custom_transforms.NormalizeIntensity(),
-        # custom_transforms.ToRGB(),
         transforms.ToTensor(),
     ])
 

@@ -17,7 +17,7 @@ class ChexpertDataset(Dataset):
 
         # Read the dataframe
         path_df = os.path.join(root_dir, mode + '.csv')
-        main_df = pd.read_csv(path_df)        
+        main_df = pd.read_csv(path_df)    
         
         # Get all image paths and image labels from dataframe
         for index, row in main_df.iterrows():
