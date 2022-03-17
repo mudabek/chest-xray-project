@@ -34,6 +34,7 @@ class ModelTrainer:
         self.eval_freq = eval_freq
         self.path_to_save_dir = pathlib.Path(config_dict['path_to_save_dir'])
         self.runs_title = config_dict['runs_title']
+        wandb_logging = config_dict['send_to_wandb']
 
         # Summary: Best epoch, loss, metric and best model weights
         self.best_val_step = 0
