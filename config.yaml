@@ -14,4 +14,4 @@ small_eval_size: 1000
 eval_freq: 800
 
 # Other configs
-send_to_wandb: False
+send_to_wandb: True

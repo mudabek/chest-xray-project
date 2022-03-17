@@ -14,6 +14,10 @@ import trainer
 import models
 import utils
 
+# In case of issues with cluster training
+import os
+os.environ["CUDA_VISIBLE_DEVICES"] = "2"
+
 
 def main(args):
     path_to_config = pathlib.Path(args.path)
@@ -69,7 +73,7 @@ def main(args):
     model.to(device)
 
     # Training things
-    pos_weights = utils.get_class_weights(path_root_to_data)
+    pos_weights = utils.get_class_weights(path_root_to_data).to(device)
     criterion = nn.BCEWithLogitsLoss(reduction='sum', pos_weight=pos_weights)
     optimizer = torch.optim.Adam(model.parameters(), lr=lr, betas=(0.9, 0.99))
 
