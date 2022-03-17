@@ -4,13 +4,13 @@ path_to_save_dir: ''
 
 # Train settings:
 model_name: 'densenet121'
-train_batch_size: 16
-val_batch_size: 1
+train_batch_size: 32
+val_batch_size: 32
 num_workers: 0
 lr: 1e-3 
-n_epochs: 2
-small_eval_size: 5
-eval_freq: 2
+n_epochs: 10
+small_eval_size: 1000
+eval_freq: 800
 
 # Other configs
 send_to_wandb: False

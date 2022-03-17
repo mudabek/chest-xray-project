@@ -21,8 +21,8 @@ def main(args):
         config = yaml.safe_load(f)
 
     # Read config:
-    path_root_to_data = pathlib.Path(config['path_to_data'])
-    path_to_save_dir = pathlib.Path(config['path_to_save_dir'])
+    path_root_to_data = config['path_to_data']
+    path_to_save_dir = config['path_to_save_dir']
 
     train_batch_size = int(config['train_batch_size'])
     val_batch_size = int(config['val_batch_size'])
@@ -31,27 +31,27 @@ def main(args):
     n_epochs = int(config['n_epochs'])
     small_eval_size = int(config['small_eval_size'])
     eval_freq = int(config['eval_freq'])
+    image_size = int(config['image_size'])
 
     # Train and val data transforms:
     train_transforms = transforms.Compose([
+        transforms.ToTensor(),
+        transforms.Resize((image_size, image_size)),
         custom_transforms.XRayCenterCrop(),
         custom_transforms.NormalizeIntensity(),
-        transforms.ToTensor(),
     ])
 
     val_transforms = transforms.Compose([
+        transforms.ToTensor(),
+        transforms.Resize((image_size, image_size)),
         custom_transforms.XRayCenterCrop(),
         custom_transforms.NormalizeIntensity(),
-        transforms.ToTensor(),
     ])
 
     # Datasets:
-    #train_dataset = dataset.ChexpertDataset(path_root_to_data, mode='train', transforms=train_transforms)
-    #val_dataset = dataset.ChexpertDataset(path_root_to_data, mode='valid', transforms=val_transforms)
-    #small_val_dataset = Subset(val_dataset, np.arange(0, small_eval_size))
-    train_dataset = dataset.DummyDataset()
-    val_dataset = dataset.DummyDataset()
-    small_val_dataset = dataset.DummyDataset()
+    train_dataset = dataset.ChexpertDataset(path_root_to_data, mode='train', transforms=train_transforms)
+    val_dataset = dataset.ChexpertDataset(path_root_to_data, mode='valid', transforms=val_transforms)
+    small_val_dataset = Subset(val_dataset, np.arange(0, small_eval_size))
 
     # Dataloaders:
     train_loader = DataLoader(train_dataset, batch_size=train_batch_size, shuffle=True, num_workers=num_workers)
