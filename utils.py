@@ -6,14 +6,11 @@ import torch
 NUM_FINE_LABELS = 14
 
 def get_class_weights(root_dir):
-    return torch.rand(14)
-
-def get_class_weights_orig(root_dir):
-    df_init = pd.read_csv(root_dir + 'train.csv')
+    df_init = pd.read_csv(root_dir / 'train.csv')
     df = df_init.iloc[:,5:].copy()
     df = df.replace(-1,0)
-    class_names = sorted(list(df.columns))
-    df = df[class_names]
+    class_names = list(df.columns)
+    # df = df[class_names]
     pos_weight = torch.Tensor([df[cl].sum()/df.shape[0] for cl in class_names])
     
     return pos_weight

@@ -84,6 +84,7 @@ def main(args):
     model_trainer.train_model()
     model_trainer.eval_model()
     model_trainer.save_results()
+    
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Model training script')

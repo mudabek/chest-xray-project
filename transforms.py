@@ -20,10 +20,3 @@ class XRayCenterCrop:
 
     def __call__(self, img):
         return self.crop_center(img)
-
-# class ToRGB:
-#     def __call__(self, img):
-#         import pdb
-#         pdb.set_trace()
-#         repeated_channels_img =  np.stack((img,)*3, axis=-1)
-#         return repeated_channels_img

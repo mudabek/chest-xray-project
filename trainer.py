@@ -94,7 +94,7 @@ class ModelTrainer:
                     
                     wandb.log(roc_auc_dict)
                     self.model.train()
-                break
+                    
         
         if self.save_last_model:
             self.checkpoint = {'model_state_dict': copy.deepcopy(self.model.state_dict()),
