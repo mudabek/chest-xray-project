@@ -28,14 +28,14 @@ def auc_roc_as_dict(y_gt, y_pred):
     auroc = {}
     gt_np = y_gt.detach().cpu().numpy()
     pred_np = y_pred.detach().cpu().numpy()
-    average_auroc = 0
-
+    
+    average_auroc = 0.0
     avging_cnt = 0
     for i in range(gt_np.shape[1]):
         if np.count_nonzero(gt_np[:, i] == 1) > 0:
             cur_roc_auc = roc_auc_score(gt_np[:, i], pred_np[:, i])
             auroc[f'auc_{LABEL_NAMES[i]}'] = cur_roc_auc
-            average_auroc =+ cur_roc_auc
+            average_auroc = average_auroc + cur_roc_auc
             avging_cnt = avging_cnt + 1
     
     auroc['auc_average'] = average_auroc / avging_cnt  

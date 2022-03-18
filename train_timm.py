@@ -16,7 +16,7 @@ import utils
 
 # In case of issues with cluster training
 import os
-# os.environ["CUDA_VISIBLE_DEVICES"] = "2"
+# os.environ["CUDA_VISIBLE_DEVICES"] = "5"
 
 
 def main(args):
