@@ -1,15 +1,15 @@
 # Paths:
 path_to_data: '/l/users/otabek.nazarov/chexpert/CheXpert-v1.0-small/'
 path_to_save_dir: '/l/users/otabek.nazarov/chexpert/CheXpert-v1.0-small/weights/'
-runs_title: 'densenet121_pretrained'
+runs_title: 'resnetblur50'
 
 # Train settings:
-model_name: 'densenet121'
+model_name: 'resnetblur50'
 train_batch_size: 32
 val_batch_size: 32
 num_workers: 16
-lr: 1e-4 
-n_epochs: 20
+lr: 1e-4
+n_epochs: 6
 small_eval_size: 234
 eval_freq: 800
 

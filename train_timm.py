@@ -67,6 +67,10 @@ def main(args):
 
     # Model
     model_name = config['model_name']
+    if args.model:
+        model_name = args.model
+        config['model_name'] = model_name
+        config['runs_title'] = model_name
     model = models.TimmModels(model_name, pretrained=True)
     model.to(device)
 
@@ -93,5 +97,6 @@ def main(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Model training script')
     parser.add_argument("-p", "--path", type=str, required=True, help="path to the config file")
+    parser.add_argument("-m", "--model", type=str, required=False, help="model name from timm")
     args = parser.parse_args()
     main(args)
