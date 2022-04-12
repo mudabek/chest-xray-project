@@ -16,7 +16,7 @@ os.environ['WANDB_MODE'] = 'offline'
 
 class ModelTrainer:
 
-    def __init__(self, model, dataloaders, criterion, optimizer, config_dict, scheduler=None, cuda_device="cuda:0",  
+    def __init__(self, model, dataloaders, criterion, optimizer, config_dict, scheduler=None, cuda_device="cuda",  
                  num_epochs=20, save_last_model=True, scheduler_step_per_epoch=True, eval_freq=2000, wandb_logging=False):
 
         self.model = model
@@ -86,7 +86,7 @@ class ModelTrainer:
 
                     roc_auc_dict = auc_roc_as_dict(out_gt, out_pred)
                     
-                    if roc_auc_dict['auc_average'] < self.best_val_metric:
+                    if roc_auc_dict['auc_average'] > self.best_val_metric:
                         print('Updating best result')
                         self.best_step = step
                         self.best_val_metric = roc_auc_dict['auc_average']

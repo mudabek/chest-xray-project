@@ -4,6 +4,8 @@ wandb/
 run.batch
 *.py[cod]
 *$py.class
+weights/
+save_dir/
 
 # C extensions
 *.so

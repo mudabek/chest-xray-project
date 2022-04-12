@@ -13,6 +13,7 @@ import transforms as custom_transforms
 import trainer
 import models
 import utils
+from convnext.convnext import convnext_small 
 
 
 def main(args):
@@ -21,8 +22,8 @@ def main(args):
         config = yaml.safe_load(f)
 
     # Read config:
-    path_root_to_data = config['path_to_data']
-    path_to_save_dir = config['path_to_save_dir']
+    path_root_to_data = pathlib.Path(config['path_to_data'])
+    path_to_save_dir = pathlib.Path(config['path_to_save_dir'])
 
     train_batch_size = int(config['train_batch_size'])
     val_batch_size = int(config['val_batch_size'])
@@ -32,20 +33,22 @@ def main(args):
     small_eval_size = int(config['small_eval_size'])
     eval_freq = int(config['eval_freq'])
     image_size = int(config['image_size'])
+    num_classes = int(config['num_classes'])
+    device = torch.device('cuda' if torch.cuda.is_available() else "cpu")
 
     # Train and val data transforms:
     train_transforms = transforms.Compose([
         transforms.ToTensor(),
-        transforms.Resize((image_size, image_size)),
         custom_transforms.XRayCenterCrop(),
         custom_transforms.NormalizeIntensity(),
+        transforms.Resize((image_size, image_size)),
     ])
 
     val_transforms = transforms.Compose([
         transforms.ToTensor(),
-        transforms.Resize((image_size, image_size)),
         custom_transforms.XRayCenterCrop(),
         custom_transforms.NormalizeIntensity(),
+        transforms.Resize((image_size, image_size)),
     ])
 
     # Datasets:
@@ -65,10 +68,13 @@ def main(args):
     }
 
     # Model
-    model = models.DenseNetBaseline()
+    model = convnext_small()
+    head_in_features = model.head.in_features
+    model.head = nn.Linear(head_in_features, num_classes)
+    model.to(device)
 
     # Training things
-    pos_weights = utils.get_class_weights(path_root_to_data)
+    pos_weights = utils.get_class_weights(path_root_to_data).to(device)
     criterion = nn.BCEWithLogitsLoss(reduction='sum', pos_weight=pos_weights)
     optimizer = torch.optim.Adam(model.parameters(), lr=lr, betas=(0.9, 0.99))
 

@@ -39,7 +39,6 @@ class ChexpertDataset(Dataset):
     def __getitem__(self, index):
         image_path = self.image_paths[index]
         image_data = np.array(Image.open(image_path).convert("RGB"), dtype="float32") # Convert image to RGB channels
-        
         if self.transforms:
             image_data = self.transforms(image_data)
         
