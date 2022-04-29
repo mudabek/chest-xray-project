@@ -6,6 +6,7 @@ run.batch
 *$py.class
 weights/
 save_dir/
+config.yaml
 
 # C extensions
 *.so

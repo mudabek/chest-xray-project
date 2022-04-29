@@ -1,4 +1,5 @@
 import argparse
+from xml.etree.ElementTree import C14NWriterTarget
 import yaml
 import pathlib
 import numpy as np
@@ -14,6 +15,8 @@ import trainer
 import models
 import utils
 from convnext.convnext import convnext_small 
+
+torch.manual_seed(7575)
 
 
 def main(args):
@@ -75,7 +78,8 @@ def main(args):
 
     # Training things
     pos_weights = utils.get_class_weights(path_root_to_data).to(device)
-    criterion = nn.BCEWithLogitsLoss(reduction='sum', pos_weight=pos_weights)
+    # criterion = nn.BCEWithLogitsLoss(reduction='sum', pos_weight=pos_weights)
+    criterion = utils.FocalLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=lr, betas=(0.9, 0.99))
 
     model_trainer = trainer.ModelTrainer(

@@ -25,3 +25,16 @@ def get_classification_thresholds(out_gt, out_pred):
         all_threshs.append(opt_thres)
 
     return all_threshs
+
+
+class FocalLoss(torch.nn.Module):
+    def __init__(self, gamma=2):
+        super(FocalLoss, self).__init__()
+        self.gamma = gamma
+        self.eps = 1e-3
+
+    def forward(self, input, target):
+        input = input.clamp(self.eps, 1 - self.eps)
+        loss = - (target * torch.pow((1 - input), self.gamma) * torch.log(input) +
+                  (1 - target) * torch.pow(input, self.gamma) * torch.log(1 - input))
+        return loss.sum()

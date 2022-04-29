@@ -1,19 +1,19 @@
 # Paths:
-path_to_data: '/home/otabek.nazarov/Downloads/research/chexpert/CheXpert-v1.0-small/'
-path_to_save_dir: 'weights/'
-runs_title: 'resnetblur50'
+path_to_data: '/l/users/otabek.nazarov/chexpert/CheXpert-v1.0-small/'
+path_to_save_dir: '/l/users/otabek.nazarov/chexpert/CheXpert-v1.0-small/weights/'
+runs_title: 'convnext'
 
 # Train settings:
-model_name: 'resnetblur50'
+model_name: 'convnext'
 train_batch_size: 32
 val_batch_size: 32
 num_workers: 16
 lr: 1e-4
-n_epochs: 6
+n_epochs: 15
 small_eval_size: 234
 eval_freq: 800
 image_size: 224
 num_classes: 14
 
-# Other configs
+# Other configs:
 send_to_wandb: True

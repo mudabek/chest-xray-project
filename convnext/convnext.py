@@ -3,6 +3,46 @@ import torch.nn as nn
 import torch.nn.functional as F
 from timm.models.layers import trunc_normal_, DropPath
 from timm.models.registry import register_model
+from convnext.classifier import Classifier
+
+class Swish(nn.Module):
+    def forward(self, input_tensor):
+        return input_tensor * torch.sigmoid(input_tensor)
+
+
+class TRelu(nn.Module):
+    def __init__(self, threshold= -.25, mean_shift=-.03):
+        super().__init__()
+        self.threshold = threshold
+        self.mean_shift = mean_shift
+    
+    def forward(self,x):
+        x = F.relu(x)+self.threshold
+        
+        if self.mean_shift is not None:
+            x.sub_(self.mean_shift)
+            
+        return x
+
+
+class FTSwish(nn.Module):
+    def __init__(self, sub=None, maxv=None, threshold=-.25):
+        super().__init__()
+        self.threshold,self.sub,self.maxv = threshold,sub,maxv
+
+    def forward(self, x): 
+        
+        pos_value = (x*torch.sigmoid(x)) + self.threshold
+        #this is temp workaround - CPU vs CUDA conflict
+        cuda0 = torch.device('cuda:0')
+        
+        tval = torch.tensor([self.threshold],device=cuda0)
+        
+        x = torch.where(x>=0,pos_value, tval)
+
+        if self.sub is not None: x.sub_(self.sub)
+        if self.maxv is not None: x.clamp_max_(self.maxv)
+        return x
 
 
 class Block(nn.Module):
@@ -21,7 +61,10 @@ class Block(nn.Module):
         self.dwconv = nn.Conv2d(dim, dim, kernel_size=7, padding=3, groups=dim) # depthwise conv
         self.norm = LayerNorm(dim, eps=1e-6)
         self.pwconv1 = nn.Linear(dim, 4 * dim) # pointwise/1x1 convs, implemented with linear layers
-        self.act = nn.GELU()
+        # self.act = nn.GELU()
+        # self.act = FTSwish()
+        # self.act = nn.ReLU()
+        self.act = TRelu()
         self.pwconv2 = nn.Linear(4 * dim, dim)
         self.gamma = nn.Parameter(layer_scale_init_value * torch.ones((dim)), 
                                     requires_grad=True) if layer_scale_init_value > 0 else None
@@ -93,6 +136,8 @@ class ConvNeXt(nn.Module):
         self.head.weight.data.mul_(head_init_scale)
         self.head.bias.data.mul_(head_init_scale)
 
+        self.classifier = Classifier()
+
     def _init_weights(self, m):
         if isinstance(m, (nn.Conv2d, nn.Linear)):
             trunc_normal_(m.weight, std=.02)
@@ -102,10 +147,14 @@ class ConvNeXt(nn.Module):
         for i in range(4):
             x = self.downsample_layers[i](x)
             x = self.stages[i](x)
+        
+        # return x
         return self.norm(x.mean([-2, -1])) # global average pooling, (N, C, H, W) -> (N, C)
 
     def forward(self, x):
         x = self.forward_features(x)
+        # x, logit_maps = self.classifier(x)
+        # x = torch.stack(x, axis=1).squeeze(-1)
         x = self.head(x)
         return x
 
@@ -162,7 +211,10 @@ def convnext_tiny(pretrained=False,in_22k=False, **kwargs):
 
 @register_model
 def convnext_small(pretrained=False,in_22k=False, **kwargs):
-    model = ConvNeXt(depths=[3, 3, 27, 3], dims=[96, 192, 384, 768], **kwargs)
+    # model = ConvNeXt(depths=[3, 3, 27, 3], dims=[96, 192, 384, 768], **kwargs)
+    # model = ConvNeXt(depths=[2, 2, 18, 2], dims=[96, 240, 600, 1500], **kwargs)
+    # model = ConvNeXt(depths=[2, 2, 18, 2], dims=[96, 144, 216, 324], **kwargs)
+    model = ConvNeXt(depths=[2, 2, 18, 2], dims=[96, 172, 312, 560], **kwargs) #17890
     if pretrained:
         url = model_urls['convnext_small_22k'] if in_22k else model_urls['convnext_small_1k']
         checkpoint = torch.hub.load_state_dict_from_url(url=url, map_location="cpu")

@@ -4,6 +4,7 @@ import wandb
 import numpy as np
 import pandas as pd
 import torch
+import torch.nn.functional as F
 from tqdm import tqdm
 import copy
 import pathlib
@@ -17,7 +18,7 @@ os.environ['WANDB_MODE'] = 'offline'
 class ModelTrainer:
 
     def __init__(self, model, dataloaders, criterion, optimizer, config_dict, scheduler=None, cuda_device="cuda",  
-                 num_epochs=20, save_last_model=True, scheduler_step_per_epoch=True, eval_freq=2000, wandb_logging=False):
+                 num_epochs=20, save_last_model=True, scheduler_step_per_epoch=True, eval_freq=2000, wandb_logging=False,):
 
         self.model = model
         self.train_loader = dataloaders['train']
@@ -44,9 +45,8 @@ class ModelTrainer:
         # Logging to wandb
         if wandb_logging:
             os.environ['WANDB_MODE'] = 'online'
-        wandb.init(project="chexpert", entity="obatek")
+        wandb.init(project="convnext", entity="obatek")
         wandb.config.update(config_dict)
-
 
     def train_model(self):
         print('===> Training')
@@ -94,6 +94,7 @@ class ModelTrainer:
                     
                     wandb.log(roc_auc_dict)
                     self.model.train()
+            self.save_results()
                     
         
         if self.save_last_model:
