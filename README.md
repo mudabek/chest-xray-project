@@ -9,3 +9,5 @@ python train_baseline.py -p config.yaml
 ```
 
 Results get logged to weights and biases.
+
+Dataset: [CheXpert](https://stanfordmlgroup.github.io/competitions/chexpert/)
